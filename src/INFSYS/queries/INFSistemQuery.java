@@ -39,8 +39,8 @@ public class INFSistemQuery {
      *
      * static synchronized EntityManager getEm() throws NullPointerException,
      * Exception kontrolisanje postojanja konekcije sa Persistent blokom !
-     *     
-* @return
+     *
+     * @return
      * @throws java.lang.Exception
      */
     public static synchronized EntityManager getEm() throws NullPointerException, Exception {
@@ -272,8 +272,8 @@ public class INFSistemQuery {
 
     /**
      * Broj Radnih Naloga za zadati datum
-     *     
-* @param datum
+     *
+     * @param datum
      * @return int
      */
     public static synchronized int BR_RN_ZaDatum(String datum) {
@@ -288,8 +288,8 @@ public class INFSistemQuery {
 
     /**
      * Broj Faktura za zadati datum
-     *     
-* @param datum
+     *
+     * @param datum
      * @return int
      */
     public static int BR_FA_ZaDatum(String datum) {
@@ -304,8 +304,8 @@ public class INFSistemQuery {
 
     /**
      * Broj Storno Faktura za zadati datum
-     *     
-* @param datum
+     *
+     * @param datum
      * @return int
      */
     public static int BR_STFA_ZaDatum(String datum) {
@@ -424,8 +424,8 @@ public class INFSistemQuery {
 
     /**
      * Godišnji izveštaj o mesečnom prometu u vrednosti radova i materijala.
-     *     
-* @param Godina
+     *
+     * @param Godina
      * @return
      */
     public static List<Map<Integer, Integer>> finansijskiAspekt_GodisnjiPregled_RadMat(int Godina) {
@@ -444,8 +444,8 @@ public class INFSistemQuery {
 
     /**
      * Godišnji izveštaj o mesečnom storniranju u vrednosti radova i materijala.
-     *     
-* @param Godina
+     *
+     * @param Godina
      * @return
      */
     public static List<Map<Integer, Integer>> finansijskiAspekt_GodisnjiPregled_Storno(int Godina) {
@@ -465,8 +465,8 @@ public class INFSistemQuery {
     /**
      * fin_Radovi_ZaPeriod(int Godina) VEOMA BRZO IZRAČUNAVAJU ODGOVOR ZA
      * RAZLIKU OD finansijskiAspekt_GodisnjiPregled
-     *     
-* @param Godina
+     *
+     * @param Godina
      * @return
      */
     public static synchronized Map<Integer, Integer> fin_Radovi_ZaPeriod(int Godina) {
@@ -495,8 +495,8 @@ public class INFSistemQuery {
     /**
      * fin_Materijal_ZaPeriod(int Godina) VEOMA BRZO IZRAČUNAVAJU ODGOVOR ZA
      * RAZLIKU OD finansijskiAspekt_GodisnjiPregled
-     *     
-* @param Godina
+     *
+     * @param Godina
      * @return
      */
     public static synchronized Map<Integer, Integer> fin_Materijal_ZaPeriod(int Godina) {
@@ -742,13 +742,39 @@ public class INFSistemQuery {
         return serija;
     }
 
-    // FINANSIJSKI DEO - RADNICI
     /**
+     * OSNOVA ZA DALJE FX metode ISPOD !!!
      *
      * @param Godina
      * @param Mesec
-     *     
-* @return Map<Integer, Integer> -> ID Savetnika, Ukupno
+     *
+     * @return Map<Object, Integer> -> 1. Serija - Radovi, 2. Serija - Materijal
+     */
+    public static List<Map<Object, Integer>> Mesec_Svi_SSavetnici_Performanse_Serije_Base(int Godina, int Mesec) {
+        List<Map<Object, Integer>> listaSerija = new ArrayList<>(2);
+        Map<Object, Integer> serija[] = new TreeMap[2];
+
+        for (int i = 0; i < serija.length; i++) {
+            serija[i] = new TreeMap<>();
+
+            for (SSavetnikPerformanse e : SSavetnikPerformanse(Godina, Mesec)) {
+                // e.getKey() -> Dan ! (int) e.getValue() -> ID SSavetnika i Materijal RESPEKTIVNO !!
+                serija[i].put(e.getImeIPrezime(), (i == 0 ? e.getRad() : e.getDelovi()));
+            }
+
+            listaSerija.add(serija[i]);
+        }
+
+        return listaSerija;
+    }
+
+    /**
+     * FINANSIJSKI DEO - ZA SERVISNE SAVETNIKE !
+     *
+     * @param Godina
+     * @param Mesec
+     *
+     * @return Map<Integer, Integer> -> ID Savetnika, Ukupno
      */
     public static Map<Integer, Integer> Mesec_Svi_SSavetnici_Performanse_Ukupno(int Godina, int Mesec) {
         Map<Integer, Integer> m = new TreeMap<>();
@@ -764,8 +790,8 @@ public class INFSistemQuery {
      *
      * @param Godina
      * @param Mesec
-     *     
-* @return Map<Integer, Integer> -> ID Savetnika, 1. Serija - Radovi, 2.
+     *
+     * @return Map<Integer, Integer> -> ID Savetnika, 1. Serija - Radovi, 2.
      * Serija - Materijal
      */
     public static List<Map<Integer, Integer>> Mesec_Svi_SSavetnici_Performanse_Serije(int Godina, int Mesec) {
@@ -788,5 +814,32 @@ public class INFSistemQuery {
 
         return listaSerija;
     }
+
+    /**
+     *
+     * @param Godina
+     * @param Mesec
+     *
+     * @return Map<String, Integer> -> Radnik, 1. Serija - Rad, 2. Serija -
+     * Materijal ! Serija - Materijal
+     */
+    public static List<Map<String, Integer>> Mesec_Svi_SSavetnici_Performanse_Serije_Cat(int Godina, int Mesec) {
+        List<Map<String, Integer>> listaSerija = new ArrayList<>(2);
+        Map<String, Integer> serija[] = new TreeMap[2];
+
+        for (int i = 0; i < serija.length; i++) {
+            serija[i] = new TreeMap<>();
+
+            for (SSavetnikPerformanse e : SSavetnikPerformanse(Godina, Mesec)) {
+                // e.getKey() -> Dan ! (int) e.getValue() -> ID SSavetnika i Materijal RESPEKTIVNO !!
+                serija[i].put(e.getImeIPrezime(), (i == 0 ? e.getRad() : e.getDelovi()));
+            }
+
+            listaSerija.add(serija[i]);
+        }
+
+        return listaSerija;
+    }
+
     //</editor-fold>
 }
