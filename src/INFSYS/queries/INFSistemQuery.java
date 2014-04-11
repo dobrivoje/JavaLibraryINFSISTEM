@@ -4,6 +4,8 @@
  */
 package INFSYS.Queries;
 
+import INFSYS.Adapt.Kategorije;
+import INFSYS.Adapt.Kategorije.ServisniSavetnik;
 import ent.infsistem.Nald001;
 import ent.infsistem.Radn001;
 import ent.infsistem.Sifarnik;
@@ -819,11 +821,12 @@ public class INFSistemQuery {
      *
      * @param Godina
      * @param Mesec
+     * @param SSTip
      *
      * @return Map<String, Integer> -> Radnik, 1. Serija - Rad, 2. Serija -
      * Materijal ! Serija - Materijal
      */
-    public static List<Map<String, Integer>> Mesec_Svi_SSavetnici_Performanse_Serije_Cat(int Godina, int Mesec) {
+    public static List<Map<String, Integer>> Mesec_Svi_SSavetnici_Performanse_Serije_Cat(int Godina, int Mesec, ServisniSavetnik SSTip) {
         List<Map<String, Integer>> listaSerija = new ArrayList<>(2);
         Map<String, Integer> serija[] = new TreeMap[2];
 
@@ -832,7 +835,7 @@ public class INFSistemQuery {
 
             for (SSavetnikPerformanse e : SSavetnikPerformanse(Godina, Mesec)) {
                 // e.getKey() -> Dan ! (int) e.getValue() -> ID SSavetnika i Materijal RESPEKTIVNO !!
-                serija[i].put(e.getImeIPrezime(), (i == 0 ? e.getRad() : e.getDelovi()));
+                serija[i].put(SSTip == Kategorije.ServisniSavetnik.IDINFSYSTEM ? e.getID() : e.getImeIPrezime(), (i == 0 ? e.getRad() : e.getDelovi()));
             }
 
             listaSerija.add(serija[i]);
